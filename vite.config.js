@@ -4,6 +4,8 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // 保留默认 public 目录，构建时将 public/app.json 复制到产物根目录（发布接口要求）
+  publicDir: 'public',
   plugins: [
     uni(),
     VitePWA({
@@ -16,6 +18,8 @@ export default defineConfig({
         theme_color: '#2f6bff',
         background_color: '#f5f7fa',
         display: 'standalone',
+        // 桌面端安装后让内容延伸到标题栏区域，消除顶部空白条；移动端自动回退 standalone
+        display_override: ['window-controls-overlay', 'standalone'],
         lang: 'zh-CN',
         id: '/',
         start_url: '/',

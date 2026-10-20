@@ -3,7 +3,8 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "PDF 工具箱"
+				"navigationBarTitleText": "PDF 工具箱",
+				"navigationStyle": "custom"
 			}
 		},
 		{

@@ -148,7 +148,8 @@ export default {
 
 <style>
 .home {
-	padding: 32rpx 24rpx;
+	/* 自定义导航栏后，用安全区内边距避开手机状态栏/桌面窗口控制区 */
+	padding: calc(32rpx + env(safe-area-inset-top)) 24rpx 32rpx;
 }
 
 .hero {

@@ -230,4 +230,22 @@ page {
   margin-top: 20rpx;
 }
 
+/* #ifdef H5 */
+/* 桌面端 PWA 以 window-controls-overlay 运行时，标题栏区域交给页面：
+   导航栏与首页头部可拖拽窗口，交互元素保持可点击 */
+uni-page-head,
+.home .hero {
+  -webkit-app-region: drag;
+}
+
+uni-page-head .uni-page-head-btn,
+uni-page-head .uni-page-head-title,
+uni-page-head button,
+uni-page-head input,
+uni-page-head select,
+uni-page-head a {
+  -webkit-app-region: no-drag;
+}
+/* #endif */
+
 </style>
