@@ -1,52 +1,48 @@
 <template>
-	<view class="home">
-		<view class="hero">
-			<text class="hero-title">PDF 工具箱</text>
-			<text class="hero-sub">图片转PDF · 合并 · 拆分 · 水印 · 转图片 · 背景提取，全部在浏览器本地处理，文件不上传</text>
-		</view>
-		<view class="grid">
-			<view
+	<div class="home">
+		<div class="hero">
+			<span class="hero-title">PDF 工具箱</span>
+			<span class="hero-sub">图片转PDF · 合并 · 拆分 · 水印 · 转图片 · 背景提取，全部在浏览器本地处理，文件不上传</span>
+		</div>
+		<div class="grid">
+			<div
 				v-for="t in tools"
 				:key="t.url"
 				class="tool-card"
-				hover-class="tool-card-hover"
-				@tap="go(t.url)"
+				@click="go(t.url)"
 			>
-				<view class="tool-icon" :style="{ backgroundColor: t.color }">
-					<text class="tool-icon-text">{{ t.badge }}</text>
-				</view>
-				<text class="tool-name">{{ t.name }}</text>
-				<text class="tool-desc">{{ t.desc }}</text>
-			</view>
-		</view>
-		<!-- #ifdef H5 -->
-		<view v-if="!installed" class="install-bar">
-			<view class="install-btn" hover-class="install-btn-hover" @tap="onInstall">
-				<text class="install-btn-text">＋ 添加到主屏幕，离线可用</text>
-			</view>
-		</view>
-		<view v-else class="hint footer">已安装为应用，可离线使用。</view>
-		<!-- #endif -->
+				<div class="tool-icon" :style="{ backgroundColor: t.color }">
+					<span class="tool-icon-text">{{ t.badge }}</span>
+				</div>
+				<span class="tool-name">{{ t.name }}</span>
+				<span class="tool-desc">{{ t.desc }}</span>
+			</div>
+		</div>
+		<div v-if="!installed" class="install-bar">
+			<div class="install-btn" @click="onInstall">
+				<span class="install-btn-text">＋ 添加到主屏幕，离线可用</span>
+			</div>
+		</div>
+		<div v-else class="hint footer">已安装为应用，可离线使用。</div>
 
 		<!-- 安装指引弹窗 -->
-		<view v-if="showGuide" class="mask" @tap="showGuide = false">
-			<view class="guide-card" @tap.stop>
-				<text class="guide-title">{{ guideTitle }}</text>
-				<view class="guide-steps">
-					<text v-for="(s, i) in guideSteps" :key="i" class="guide-step">{{ i + 1 }}. {{ s }}</text>
-				</view>
-				<view class="guide-btn" hover-class="install-btn-hover" @tap="showGuide = false">
-					<text class="guide-btn-text">知道了</text>
-				</view>
-			</view>
-		</view>
-	</view>
+		<div v-if="showGuide" class="mask" @click="showGuide = false">
+			<div class="guide-card" @click.stop>
+				<span class="guide-title">{{ guideTitle }}</span>
+				<div class="guide-steps">
+					<span v-for="(s, i) in guideSteps" :key="i" class="guide-step">{{ i + 1 }}. {{ s }}</span>
+				</div>
+				<div class="guide-btn" @click="showGuide = false">
+					<span class="guide-btn-text">知道了</span>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
-// #ifdef H5
 import { isStandalone, isIOS, isWeChat, canPromptInstall, promptInstall, installConfirmed } from '@/utils/pwa-install.js'
-// #endif
+import { toast } from '@/utils/ui'
 
 export default {
 	data() {
@@ -102,16 +98,13 @@ export default {
 			]
 		},
 	},
-	onShow() {
-		// #ifdef H5
+	mounted() {
 		this.installed = isStandalone()
-		// #endif
 	},
 	methods: {
 		go(url) {
-			uni.navigateTo({ url })
+			this.$router.push(url)
 		},
-		// #ifdef H5
 		async onInstall() {
 			if (isWeChat()) {
 				this.guidePlatform = 'wechat'
@@ -124,7 +117,7 @@ export default {
 					// 等待 appinstalled 事件确认安装真正完成
 					setTimeout(() => {
 						if (installConfirmed()) {
-							uni.showToast({ title: '已添加到主屏幕', icon: 'success' })
+							toast('已添加到主屏幕')
 							this.installed = true
 						} else {
 							this.guidePlatform = 'fallback'
@@ -139,35 +132,34 @@ export default {
 				}
 				return
 			}
-			this.guidePlatform = isIOS() ? 'ios' : 'android'
-			this.showGuide = true
+				this.guidePlatform = isIOS() ? 'ios' : 'android'
+				this.showGuide = true
+			},
 		},
-		// #endif
-		}
 	}
 </script>
 
 <style>
 .home {
 	/* 自定义导航栏后，用安全区内边距避开手机状态栏/桌面窗口控制区 */
-	padding: calc(32rpx + env(safe-area-inset-top)) 24rpx 32rpx;
+	padding: calc(calc(32 * var(--rpx)) + env(safe-area-inset-top)) calc(24 * var(--rpx)) calc(32 * var(--rpx));
 }
 
 .hero {
-	padding: 24rpx 8rpx 40rpx;
+	padding: calc(24 * var(--rpx)) calc(8 * var(--rpx)) calc(40 * var(--rpx));
 	display: flex;
 	flex-direction: column;
 }
 
 .hero-title {
-	font-size: 48rpx;
+	font-size: calc(48 * var(--rpx));
 	font-weight: 700;
 	color: #111827;
 }
 
 .hero-sub {
-	margin-top: 12rpx;
-	font-size: 24rpx;
+	margin-top: calc(12 * var(--rpx));
+	font-size: calc(24 * var(--rpx));
 	color: #6b7280;
 	line-height: 1.6;
 }
@@ -182,73 +174,74 @@ export default {
 	width: 48.5%;
 	box-sizing: border-box;
 	background: #ffffff;
-	border-radius: 20rpx;
-	padding: 28rpx;
-	margin-bottom: 24rpx;
-	box-shadow: 0 2rpx 10rpx rgba(31, 41, 55, 0.05);
+	border-radius: calc(20 * var(--rpx));
+	padding: calc(28 * var(--rpx));
+	margin-bottom: calc(24 * var(--rpx));
+	box-shadow: 0 calc(2 * var(--rpx)) calc(10 * var(--rpx)) rgba(31, 41, 55, 0.05);
 	display: flex;
 	flex-direction: column;
 }
 
-.tool-card-hover {
+.tool-card:active {
 	transform: scale(0.98);
-	box-shadow: 0 4rpx 16rpx rgba(31, 41, 55, 0.12);
+	box-shadow: 0 calc(4 * var(--rpx)) calc(16 * var(--rpx)) rgba(31, 41, 55, 0.12);
 }
 
 .tool-icon {
-	width: 80rpx;
-	height: 80rpx;
-	border-radius: 20rpx;
+	width: calc(80 * var(--rpx));
+	height: calc(80 * var(--rpx));
+	border-radius: calc(20 * var(--rpx));
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	margin-bottom: 20rpx;
+	margin-bottom: calc(20 * var(--rpx));
 }
 
 .tool-icon-text {
 	color: #ffffff;
-	font-size: 40rpx;
+	font-size: calc(40 * var(--rpx));
 	font-weight: 700;
 }
 
 .tool-name {
-	font-size: 30rpx;
+	font-size: calc(30 * var(--rpx));
 	font-weight: 600;
 	color: #111827;
 }
 
 .tool-desc {
-	margin-top: 8rpx;
-	font-size: 22rpx;
+	margin-top: calc(8 * var(--rpx));
+	font-size: calc(22 * var(--rpx));
 	color: #9ca3af;
 	line-height: 1.5;
 }
 
 .footer {
 	text-align: center;
-	margin-top: 8rpx;
+	margin-top: calc(8 * var(--rpx));
 }
 
 .install-bar {
-	margin-top: 16rpx;
+	margin-top: calc(16 * var(--rpx));
 }
 
 .install-btn {
 	background: linear-gradient(135deg, #2f6bff, #0ea5e9);
-	border-radius: 16rpx;
-	padding: 26rpx 0;
+	border-radius: calc(16 * var(--rpx));
+	padding: calc(26 * var(--rpx)) 0;
 	text-align: center;
-	box-shadow: 0 6rpx 18rpx rgba(47, 107, 255, 0.3);
+	box-shadow: 0 calc(6 * var(--rpx)) calc(18 * var(--rpx)) rgba(47, 107, 255, 0.3);
 }
 
-.install-btn-hover {
+.install-btn:active,
+.guide-btn:active {
 	opacity: 0.85;
 	transform: scale(0.98);
 }
 
 .install-btn-text {
 	color: #ffffff;
-	font-size: 30rpx;
+	font-size: calc(30 * var(--rpx));
 	font-weight: 600;
 }
 
@@ -263,24 +256,24 @@ export default {
 	align-items: center;
 	justify-content: center;
 	z-index: 999;
-	padding: 48rpx;
+	padding: calc(48 * var(--rpx));
 }
 
 .guide-card {
 	width: 100%;
 	background: #ffffff;
-	border-radius: 24rpx;
-	padding: 40rpx 36rpx;
+	border-radius: calc(24 * var(--rpx));
+	padding: calc(40 * var(--rpx)) calc(36 * var(--rpx));
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 }
 
 .guide-title {
-	font-size: 34rpx;
+	font-size: calc(34 * var(--rpx));
 	font-weight: 700;
 	color: #111827;
-	margin-bottom: 24rpx;
+	margin-bottom: calc(24 * var(--rpx));
 }
 
 .guide-steps {
@@ -289,22 +282,22 @@ export default {
 }
 
 .guide-step {
-	font-size: 27rpx;
+	font-size: calc(27 * var(--rpx));
 	color: #374151;
 	line-height: 1.7;
-	margin-bottom: 12rpx;
+	margin-bottom: calc(12 * var(--rpx));
 }
 
 .guide-btn {
-	margin-top: 28rpx;
+	margin-top: calc(28 * var(--rpx));
 	background: #2f6bff;
-	border-radius: 14rpx;
-	padding: 20rpx 0;
+	border-radius: calc(14 * var(--rpx));
+	padding: calc(20 * var(--rpx)) 0;
 	text-align: center;
 }
 
 .guide-btn-text {
 	color: #ffffff;
-	font-size: 28rpx;
+	font-size: calc(28 * var(--rpx));
 }
 </style>

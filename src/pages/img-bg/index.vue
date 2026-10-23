@@ -1,49 +1,50 @@
 <template>
-	<view class="tool-page">
-		<view class="card">
-			<view class="card-title">选择图片</view>
-			<button class="btn-ghost" @tap="choose">{{ files.length ? `已选 ${files.length} 张，重新选择` : '选择图片（可多选）' }}</button>
-			<view v-if="files.length" class="file-list">
-				<view v-for="(f, i) in files" :key="i" class="file-item">
-					<image class="file-thumb" :src="f.url" mode="aspectFill" />
-					<view class="file-name">
-						<text>{{ f.name }}</text>
-						<text class="file-size">{{ f.sizeText }}</text>
-					</view>
-					<button class="mini-btn danger" @tap="removeFile(i)">删除</button>
-				</view>
-			</view>
-		</view>
+	<div class="tool-page">
+		<div class="card">
+			<div class="card-title">选择图片</div>
+			<button class="btn-ghost" @click="choose">{{ files.length ? `已选 ${files.length} 张，重新选择` : '选择图片（可多选）' }}</button>
+			<div v-if="files.length" class="file-list">
+				<div v-for="(f, i) in files" :key="i" class="file-item">
+					<img class="file-thumb" :src="f.url" />
+					<div class="file-name">
+						<span>{{ f.name }}</span>
+						<span class="file-size">{{ f.sizeText }}</span>
+					</div>
+					<button class="mini-btn danger" @click="removeFile(i)">删除</button>
+				</div>
+			</div>
+		</div>
 
-		<view class="card">
-			<view class="card-title">提取设置</view>
-			<view class="label">背景容差：{{ tolerance }}（背景越杂、越深，数值调越大）</view>
-			<slider :value="tolerance" :min="5" :max="100" :step="5" activeColor="#2f6bff" @change="(e) => (tolerance = e.detail.value)" />
-			<button class="btn-primary" style="margin-top: 24rpx" :disabled="!files.length || busy" @tap="generate">
+		<div class="card">
+			<div class="card-title">提取设置</div>
+			<div class="label">背景容差：{{ tolerance }}（背景越杂、越深，数值调越大）</div>
+			<input type="range" class="range" :value="tolerance" :min="5" :max="100" :step="5" @input="(e) => (tolerance = Number(e.target.value))" />
+			<button class="btn-primary" style="margin-top: calc(24 * var(--rpx))" :disabled="!files.length || busy" @click="generate">
 				{{ busy ? `提取中 ${Math.round(progress * 100)}%` : '提取纯白 / 透明背景' }}
 			</button>
-			<view v-if="busy" class="progress-wrap">
-				<view class="progress-bar"><view class="progress-inner" :style="{ width: progress * 100 + '%' }"></view></view>
-			</view>
-			<view class="hint" style="margin-top: 16rpx">每张图片输出两个文件：纯白底 JPG + 透明底 PNG，全部本地处理不上传。</view>
-		</view>
+			<div v-if="busy" class="progress-wrap">
+				<div class="progress-bar"><div class="progress-inner" :style="{ width: progress * 100 + '%' }"></div></div>
+			</div>
+			<div class="hint" style="margin-top: calc(16 * var(--rpx))">每张图片输出两个文件：纯白底 JPG + 透明底 PNG，全部本地处理不上传。</div>
+		</div>
 
-		<view v-if="results.length" class="card">
-			<view class="row-between">
-				<view class="card-title" style="margin-bottom: 0">提取结果（{{ results.length }} 个文件）</view>
-				<button class="mini-btn" @tap="downloadAll">全部下载</button>
-			</view>
-			<view v-for="(r, i) in results" :key="r.name" class="result-item">
-				<image class="out-thumb" :class="{ checker: r.kind === '透明' }" :src="r.url" mode="aspectFill" />
-				<text class="file-name">{{ r.name }}（{{ r.sizeText }}）</text>
-				<button class="mini-btn" @tap="downloadOne(i)">下载</button>
-			</view>
-		</view>
-	</view>
+		<div v-if="results.length" class="card">
+			<div class="row-between">
+				<div class="card-title" style="margin-bottom: 0">提取结果（{{ results.length }} 个文件）</div>
+				<button class="mini-btn" @click="downloadAll">全部下载</button>
+			</div>
+			<div v-for="(r, i) in results" :key="r.name" class="result-item">
+				<img class="out-thumb" :class="{ checker: r.kind === '透明' }" :src="r.url" />
+				<span class="file-name">{{ r.name }}（{{ r.sizeText }}）</span>
+				<button class="mini-btn" @click="downloadOne(i)">下载</button>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
 import { pickFiles, downloadBlob, formatSize, baseName } from '../../utils/file'
+import { alertModal, toast } from '../../utils/ui'
 import { extractBackgrounds } from '../../utils/img-bg'
 
 export default {
@@ -92,12 +93,12 @@ export default {
 					this.pushResult(`${base}_纯白底.jpg`, whiteBlob, '纯白')
 					this.pushResult(`${base}_透明底.png`, transBlob, '透明')
 				} catch (e) {
-					uni.showModal({ title: `「${f.name}」处理失败`, content: String((e && e.message) || e), showCancel: false })
+					alertModal(`「${f.name}」处理失败`, String((e && e.message) || e))
 				}
 				this.progress = (i + 1) / total
 			}
 			this.busy = false
-			if (this.results.length) uni.showToast({ title: `已生成 ${this.results.length} 个文件`, icon: 'success' })
+			if (this.results.length) toast(`已生成 ${this.results.length} 个文件`)
 		},
 		pushResult(name, blob, kind) {
 			this.results.push({ name, blob, kind, sizeText: formatSize(blob.size), url: URL.createObjectURL(blob) })
@@ -113,7 +114,7 @@ export default {
 			}
 		},
 	},
-	onUnload() {
+	unmounted() {
 		this.clearFiles()
 		this.clearResults()
 	},
@@ -122,22 +123,22 @@ export default {
 
 <style>
 .file-list {
-	margin-top: 16rpx;
+	margin-top: calc(16 * var(--rpx));
 }
 
 .out-thumb {
-	width: 72rpx;
-	height: 72rpx;
-	border-radius: 8rpx;
+	width: calc(72 * var(--rpx));
+	height: calc(72 * var(--rpx));
+	border-radius: calc(8 * var(--rpx));
 	background: #f3f4f6;
 	flex-shrink: 0;
-	margin-right: 16rpx;
+	margin-right: calc(16 * var(--rpx));
 	object-fit: contain;
 }
 
 /* 透明 PNG 用棋盘格衬托，方便确认抠图效果 */
 .out-thumb.checker {
 	background: conic-gradient(#e5e7eb 90deg, #ffffff 90deg 180deg, #e5e7eb 180deg 270deg, #ffffff 270deg);
-	background-size: 16rpx 16rpx;
+	background-size: calc(16 * var(--rpx)) calc(16 * var(--rpx));
 }
 </style>

@@ -1,13 +1,21 @@
 import { defineConfig } from 'vite'
-import uni from '@dcloudio/vite-plugin-uni'
+import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
+import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // 发布后应用部署在站点根下的 pdf-toolbox 目录
+  base: '/pdf-toolbox/',
   // 保留默认 public 目录，构建时将 public/app.json 复制到产物根目录（发布接口要求）
   publicDir: 'public',
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
   plugins: [
-    uni(),
+    vue(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['static/icons/favicon.svg'],
@@ -21,9 +29,9 @@ export default defineConfig({
         // 桌面端安装后让内容延伸到标题栏区域，消除顶部空白条；移动端自动回退 standalone
         display_override: ['window-controls-overlay', 'standalone'],
         lang: 'zh-CN',
-        id: '/',
-        start_url: '/',
-        scope: '/',
+        id: '/pdf-toolbox/',
+        start_url: '/pdf-toolbox/',
+        scope: '/pdf-toolbox/',
         icons: [
           {
             src: 'static/icons/pwa-192x192.png',

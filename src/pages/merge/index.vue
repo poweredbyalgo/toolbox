@@ -1,38 +1,39 @@
 <template>
-	<view class="tool-page">
-		<view class="card">
-			<view class="card-title">选择 PDF</view>
-			<button class="btn-ghost" @tap="choose">添加 PDF 文件</button>
-			<view v-for="(it, i) in items" :key="it.id" class="file-item">
-				<image v-if="it.thumb" class="file-thumb" :src="it.thumb" mode="aspectFill" />
-				<view v-else class="file-thumb"></view>
-				<view class="file-name">
-					<text>{{ it.name }}</text>
-					<text class="file-size">{{ it.pageCount }} 页 · {{ it.sizeText }}</text>
-				</view>
-				<view class="file-actions">
-					<button class="mini-btn" :disabled="i === 0" @tap="moveUp(i)">上移</button>
-					<button class="mini-btn" :disabled="i === items.length - 1" @tap="moveDown(i)">下移</button>
-					<button class="mini-btn danger" @tap="removeAt(i)">删除</button>
-				</view>
-			</view>
-			<view v-if="!items.length" class="hint">至少两个 PDF，按列表顺序合并。</view>
-		</view>
+	<div class="tool-page">
+		<div class="card">
+			<div class="card-title">选择 PDF</div>
+			<button class="btn-ghost" @click="choose">添加 PDF 文件</button>
+			<div v-for="(it, i) in items" :key="it.id" class="file-item">
+				<img v-if="it.thumb" class="file-thumb" :src="it.thumb" />
+				<div v-else class="file-thumb"></div>
+				<div class="file-name">
+					<span>{{ it.name }}</span>
+					<span class="file-size">{{ it.pageCount }} 页 · {{ it.sizeText }}</span>
+				</div>
+				<div class="file-actions">
+					<button class="mini-btn" :disabled="i === 0" @click="moveUp(i)">上移</button>
+					<button class="mini-btn" :disabled="i === items.length - 1" @click="moveDown(i)">下移</button>
+					<button class="mini-btn danger" @click="removeAt(i)">删除</button>
+				</div>
+			</div>
+			<div v-if="!items.length" class="hint">至少两个 PDF，按列表顺序合并。</div>
+		</div>
 
-		<view class="card">
-			<button class="btn-primary" :disabled="items.length < 2 || busy" @tap="generate">
+		<div class="card">
+			<button class="btn-primary" :disabled="items.length < 2 || busy" @click="generate">
 				{{ busy ? '处理中…' : '合并并下载' }}
 			</button>
-			<view v-if="busy" class="progress-wrap">
-				<view class="progress-bar"><view class="progress-inner" :style="{ width: progress * 100 + '%' }"></view></view>
-				<view class="progress-text">{{ Math.round(progress * 100) }}%</view>
-			</view>
-		</view>
-	</view>
+			<div v-if="busy" class="progress-wrap">
+				<div class="progress-bar"><div class="progress-inner" :style="{ width: progress * 100 + '%' }"></div></div>
+				<div class="progress-text">{{ Math.round(progress * 100) }}%</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
 import { pickFiles, readFileBytes, downloadBytes, formatSize, baseName } from '../../utils/file'
+import { alertModal } from '../../utils/ui'
 import { getPdfThumbnails, getPdfPageCount } from '../../utils/pdfjs'
 import { mergePdfs } from '../../utils/pdf-ops'
 
@@ -57,7 +58,7 @@ export default {
 					pageCount = await getPdfPageCount(bytes)
 					thumb = (await getPdfThumbnails(bytes, 1))[0] || ''
 				} catch (e) {
-					uni.showModal({ title: '无法读取', content: `${f.name} 可能已损坏或加密`, showCancel: false })
+					alertModal('无法读取', `${f.name} 可能已损坏或加密`)
 					continue
 				}
 				this.items.push({ id: uid++, name: f.name, bytes, pageCount, thumb, sizeText: formatSize(f.size) })
@@ -91,7 +92,7 @@ export default {
 				const name = `${baseName(this.items[0].name)}_合并${this.items.length}份.pdf`
 				downloadBytes(bytes, name, 'application/pdf')
 			} catch (e) {
-				uni.showModal({ title: '合并失败', content: String((e && e.message) || e), showCancel: false })
+				alertModal('合并失败', String((e && e.message) || e))
 			} finally {
 				this.busy = false
 			}

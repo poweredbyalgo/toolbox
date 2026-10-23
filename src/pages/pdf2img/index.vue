@@ -1,49 +1,50 @@
 <template>
-	<view class="tool-page">
-		<view class="card">
-			<view class="card-title">选择 PDF</view>
-			<button class="btn-ghost" @tap="choose">{{ file ? '重新选择' : '选择 PDF 文件' }}</button>
-			<view v-if="file" class="file-item">
-				<view class="file-name">
-					<text>{{ file.name }}</text>
-					<text class="file-size">{{ file.pageCount }} 页 · {{ file.sizeText }}</text>
-				</view>
-			</view>
-		</view>
+	<div class="tool-page">
+		<div class="card">
+			<div class="card-title">选择 PDF</div>
+			<button class="btn-ghost" @click="choose">{{ file ? '重新选择' : '选择 PDF 文件' }}</button>
+			<div v-if="file" class="file-item">
+				<div class="file-name">
+					<span>{{ file.name }}</span>
+					<span class="file-size">{{ file.pageCount }} 页 · {{ file.sizeText }}</span>
+				</div>
+			</div>
+		</div>
 
-		<view class="card">
-			<view class="card-title">导出设置</view>
-			<view class="label">格式</view>
-			<view class="seg">
-				<view class="seg-item" :class="{ active: format === 'jpeg' }" @tap="format = 'jpeg'">JPG</view>
-				<view class="seg-item" :class="{ active: format === 'png' }" @tap="format = 'png'">PNG</view>
-			</view>
-			<view class="label">清晰度：{{ scale }}x（约 {{ Math.round(scale * 96) }} DPI）</view>
-			<slider :value="scale * 10" :min="10" :max="40" :step="5" activeColor="#2f6bff" @change="(e) => (scale = e.detail.value / 10)" />
-			<button class="btn-primary" style="margin-top: 24rpx" :disabled="!file || busy" @tap="generate">
+		<div class="card">
+			<div class="card-title">导出设置</div>
+			<div class="label">格式</div>
+			<div class="seg">
+				<div class="seg-item" :class="{ active: format === 'jpeg' }" @click="format = 'jpeg'">JPG</div>
+				<div class="seg-item" :class="{ active: format === 'png' }" @click="format = 'png'">PNG</div>
+			</div>
+			<div class="label">清晰度：{{ scale }}x（约 {{ Math.round(scale * 96) }} DPI）</div>
+			<input type="range" class="range" :value="scale * 10" :min="10" :max="40" :step="5" @input="(e) => (scale = Number(e.target.value) / 10)" />
+			<button class="btn-primary" style="margin-top: calc(24 * var(--rpx))" :disabled="!file || busy" @click="generate">
 				{{ busy ? `导出中 ${Math.round(progress * 100)}%` : '逐页导出图片' }}
 			</button>
-			<view v-if="busy" class="progress-wrap">
-				<view class="progress-bar"><view class="progress-inner" :style="{ width: progress * 100 + '%' }"></view></view>
-			</view>
-		</view>
+			<div v-if="busy" class="progress-wrap">
+				<div class="progress-bar"><div class="progress-inner" :style="{ width: progress * 100 + '%' }"></div></div>
+			</div>
+		</div>
 
-		<view v-if="images.length" class="card">
-			<view class="row-between">
-				<view class="card-title" style="margin-bottom: 0">导出结果（{{ images.length }} 张）</view>
-				<button class="mini-btn" @tap="downloadAll">全部下载</button>
-			</view>
-			<view v-for="(im, i) in images" :key="im.name" class="result-item">
-				<image class="out-thumb" :src="im.url" mode="aspectFill" />
-				<text class="file-name">{{ im.name }}（{{ im.sizeText }}）</text>
-				<button class="mini-btn" @tap="downloadOne(i)">下载</button>
-			</view>
-		</view>
-	</view>
+		<div v-if="images.length" class="card">
+			<div class="row-between">
+				<div class="card-title" style="margin-bottom: 0">导出结果（{{ images.length }} 张）</div>
+				<button class="mini-btn" @click="downloadAll">全部下载</button>
+			</div>
+			<div v-for="(im, i) in images" :key="im.name" class="result-item">
+				<img class="out-thumb" :src="im.url" />
+				<span class="file-name">{{ im.name }}（{{ im.sizeText }}）</span>
+				<button class="mini-btn" @click="downloadOne(i)">下载</button>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
 import { pickFiles, readFileBytes, canvasToBlob, downloadBlob, formatSize, baseName } from '../../utils/file'
+import { alertModal } from '../../utils/ui'
 import { loadPdfDoc, renderPageToCanvas, getPdfPageCount } from '../../utils/pdfjs'
 
 export default {
@@ -68,7 +69,7 @@ export default {
 				this.file = { name: f.name, bytes, pageCount, sizeText: formatSize(f.size) }
 				this.clearImages()
 			} catch (e) {
-				uni.showModal({ title: '无法读取', content: String((e && e.message) || e), showCancel: false })
+				alertModal('无法读取', String((e && e.message) || e))
 			}
 		},
 		clearImages() {
@@ -98,7 +99,7 @@ export default {
 					this.progress = i / doc.numPages
 				}
 			} catch (e) {
-				uni.showModal({ title: '导出失败', content: String((e && e.message) || e), showCancel: false })
+				alertModal('导出失败', String((e && e.message) || e))
 			} finally {
 				if (doc) await doc.destroy()
 				this.busy = false
@@ -120,12 +121,12 @@ export default {
 
 <style>
 .out-thumb {
-	width: 64rpx;
-	height: 84rpx;
-	border-radius: 8rpx;
+	width: calc(64 * var(--rpx));
+	height: calc(84 * var(--rpx));
+	border-radius: calc(8 * var(--rpx));
 	background: #f3f4f6;
 	flex-shrink: 0;
-	margin-right: 16rpx;
+	margin-right: calc(16 * var(--rpx));
 	object-fit: cover;
 }
 </style>

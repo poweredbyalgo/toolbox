@@ -1,65 +1,66 @@
 <template>
-	<view class="tool-page">
-		<view class="card">
-			<view class="card-title">选择图片</view>
-			<button class="btn-ghost" @tap="choose">添加图片</button>
-			<view v-if="items.length" class="hint" style="margin-top: 16rpx">共 {{ items.length }} 张，列表顺序即页序</view>
-			<view v-for="(it, i) in items" :key="it.id" class="file-item">
-				<image class="file-thumb" :src="it.url" mode="aspectFill" />
-				<view class="file-name">
-					<text>{{ it.name }}</text>
-					<text class="file-size">{{ it.sizeText }}</text>
-				</view>
-				<view class="file-actions">
-					<button class="mini-btn" :disabled="i === 0" @tap="moveUp(i)">上移</button>
-					<button class="mini-btn" :disabled="i === items.length - 1" @tap="moveDown(i)">下移</button>
-					<button class="mini-btn danger" @tap="removeAt(i)">删除</button>
-				</view>
-			</view>
-			<view v-if="!items.length" class="hint">支持 JPG / PNG / WebP 等，可多选。</view>
-		</view>
+	<div class="tool-page">
+		<div class="card">
+			<div class="card-title">选择图片</div>
+			<button class="btn-ghost" @click="choose">添加图片</button>
+			<div v-if="items.length" class="hint" style="margin-top: calc(16 * var(--rpx))">共 {{ items.length }} 张，列表顺序即页序</div>
+			<div v-for="(it, i) in items" :key="it.id" class="file-item">
+				<img class="file-thumb" :src="it.url" />
+				<div class="file-name">
+					<span>{{ it.name }}</span>
+					<span class="file-size">{{ it.sizeText }}</span>
+				</div>
+				<div class="file-actions">
+					<button class="mini-btn" :disabled="i === 0" @click="moveUp(i)">上移</button>
+					<button class="mini-btn" :disabled="i === items.length - 1" @click="moveDown(i)">下移</button>
+					<button class="mini-btn danger" @click="removeAt(i)">删除</button>
+				</div>
+			</div>
+			<div v-if="!items.length" class="hint">支持 JPG / PNG / WebP 等，可多选。</div>
+		</div>
 
-		<view class="card">
-			<view class="card-title">参数</view>
-			<view class="label">页面大小</view>
-			<view class="seg">
-				<view class="seg-item" :class="{ active: pageSize === 'a4' }" @tap="pageSize = 'a4'">A4</view>
-				<view class="seg-item" :class="{ active: pageSize === 'original' }" @tap="pageSize = 'original'">按图片尺寸</view>
-			</view>
+		<div class="card">
+			<div class="card-title">参数</div>
+			<div class="label">页面大小</div>
+			<div class="seg">
+				<div class="seg-item" :class="{ active: pageSize === 'a4' }" @click="pageSize = 'a4'">A4</div>
+				<div class="seg-item" :class="{ active: pageSize === 'original' }" @click="pageSize = 'original'">按图片尺寸</div>
+			</div>
 			<template v-if="pageSize === 'a4'">
-				<view class="label">方向</view>
-				<view class="seg">
-					<view
+				<div class="label">方向</div>
+				<div class="seg">
+					<div
 						v-for="o in orientations"
 						:key="o.value"
 						class="seg-item"
 						:class="{ active: orientation === o.value }"
-						@tap="orientation = o.value"
-					>{{ o.label }}</view>
-				</view>
+						@click="orientation = o.value"
+					>{{ o.label }}</div>
+				</div>
 			</template>
-			<view class="label">页边距：{{ margin }} pt</view>
-			<slider :value="margin" :min="0" :max="60" :step="5" activeColor="#2f6bff" @change="onMargin" />
-		</view>
+			<div class="label">页边距：{{ margin }} pt</div>
+			<input type="range" class="range" :value="margin" :min="0" :max="60" :step="5" @input="onMargin" />
+		</div>
 
-		<view class="card">
-			<button class="btn-primary" :disabled="!items.length || busy" @tap="generate">
+		<div class="card">
+			<button class="btn-primary" :disabled="!items.length || busy" @click="generate">
 				{{ busy ? '处理中…' : '生成 PDF' }}
 			</button>
-			<view v-if="busy" class="progress-wrap">
-				<view class="progress-bar"><view class="progress-inner" :style="{ width: progress * 100 + '%' }"></view></view>
-				<view class="progress-text">{{ Math.round(progress * 100) }}%</view>
-			</view>
-			<view v-if="result" class="result-item">
-				<text class="file-name">{{ result.name }}（{{ result.sizeText }}）</text>
-				<button class="mini-btn" @tap="download">下载</button>
-			</view>
-		</view>
-	</view>
+			<div v-if="busy" class="progress-wrap">
+				<div class="progress-bar"><div class="progress-inner" :style="{ width: progress * 100 + '%' }"></div></div>
+				<div class="progress-text">{{ Math.round(progress * 100) }}%</div>
+			</div>
+			<div v-if="result" class="result-item">
+				<span class="file-name">{{ result.name }}（{{ result.sizeText }}）</span>
+				<button class="mini-btn" @click="download">下载</button>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
 import { pickFiles, downloadBytes, formatSize, baseName } from '../../utils/file'
+import { alertModal } from '../../utils/ui'
 import { imagesToPdf } from '../../utils/pdf-ops'
 
 let uid = 1
@@ -113,7 +114,7 @@ export default {
 			if (it) URL.revokeObjectURL(it.url)
 		},
 		onMargin(e) {
-			this.margin = e.detail.value
+			this.margin = Number(e.target.value)
 		},
 		async generate() {
 			this.busy = true
@@ -128,7 +129,7 @@ export default {
 				const name = `${baseName(this.items[0].name)}_共${this.items.length}页.pdf`
 				this.result = { bytes, name, sizeText: formatSize(bytes.length) }
 			} catch (e) {
-				uni.showModal({ title: '生成失败', content: String((e && e.message) || e), showCancel: false })
+				alertModal('生成失败', String((e && e.message) || e))
 			} finally {
 				this.busy = false
 			}

@@ -3,7 +3,7 @@ import path from "node:path";
 
 const WORKER = "https://worker-route.poweredbyalgo.com/app-publisher";
 const APP = "pdf-toolbox";
-const DIST = path.resolve("dist/build/h5");
+const DIST = path.resolve("dist");
 const PASSWORD = process.env.UPLOAD_PASSWORD;
 if (!PASSWORD) throw new Error("请通过环境变量 UPLOAD_PASSWORD 提供上传密码");
 

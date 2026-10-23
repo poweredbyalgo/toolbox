@@ -1,63 +1,64 @@
 <template>
-	<view class="tool-page">
-		<view class="card">
-			<view class="card-title">选择 PDF</view>
-			<button class="btn-ghost" @tap="choose">{{ file ? '重新选择' : '选择 PDF 文件' }}</button>
-			<view v-if="file" class="file-item">
-				<view class="file-name">
-					<text>{{ file.name }}</text>
-					<text class="file-size">{{ file.pageCount }} 页 · {{ file.sizeText }}</text>
-				</view>
-			</view>
-			<view class="hint">去水印 = 删除 PDF 中的水印图片对象（带透明蒙版、跨页重复出现的图片，以及 Watermark 注释），不做栅格化，正文文字与排版保持原样。</view>
-		</view>
+	<div class="tool-page">
+		<div class="card">
+			<div class="card-title">选择 PDF</div>
+			<button class="btn-ghost" @click="choose">{{ file ? '重新选择' : '选择 PDF 文件' }}</button>
+			<div v-if="file" class="file-item">
+				<div class="file-name">
+					<span>{{ file.name }}</span>
+					<span class="file-size">{{ file.pageCount }} 页 · {{ file.sizeText }}</span>
+				</div>
+			</div>
+			<div class="hint">去水印 = 删除 PDF 中的水印图片对象（带透明蒙版、跨页重复出现的图片，以及 Watermark 注释），不做栅格化，正文文字与排版保持原样。</div>
+		</div>
 
-		<view class="card">
-			<button class="btn-primary" :disabled="!file || busy" @tap="detect">
+		<div class="card">
+			<button class="btn-primary" :disabled="!file || busy" @click="detect">
 				{{ busy ? '处理中…' : file && !candidates.length && !detected ? '识别水印' : '重新识别' }}
 			</button>
-			<view v-if="busy" class="progress-wrap">
-				<view class="progress-bar"><view class="progress-inner" :style="{ width: progress * 100 + '%' }"></view></view>
-				<view class="progress-text">{{ Math.round(progress * 100) }}%</view>
-			</view>
-		</view>
+			<div v-if="busy" class="progress-wrap">
+				<div class="progress-bar"><div class="progress-inner" :style="{ width: progress * 100 + '%' }"></div></div>
+				<div class="progress-text">{{ Math.round(progress * 100) }}%</div>
+			</div>
+		</div>
 
-		<view v-if="detected && !candidates.length" class="card">
-			<view class="hint">未检测到水印图片对象。该文件可能没有可结构化删除的水印（例如水印是直接绘制在页面内容里的普通图片）。</view>
-		</view>
+		<div v-if="detected && !candidates.length" class="card">
+			<div class="hint">未检测到水印图片对象。该文件可能没有可结构化删除的水印（例如水印是直接绘制在页面内容里的普通图片）。</div>
+		</div>
 
-		<view v-if="candidates.length" class="card">
-			<view class="row-between">
-				<view class="card-title" style="margin-bottom: 0">候选水印（{{ candidates.length }} 个）</view>
-				<text class="hint">点击条目可勾选/取消</text>
-			</view>
-			<view v-for="c in candidates" :key="c.id" class="cand" :class="{ on: c.checked }" @tap="c.checked = !c.checked">
-				<view class="cand-check">{{ c.checked ? '✓' : '' }}</view>
-				<image v-if="c.preview" class="cand-img" :src="c.preview" mode="aspectFit" />
-				<view v-else class="cand-img cand-img-empty"><text>{{ c.type === 'annot' ? '注释' : '无预览' }}</text></view>
-				<view class="cand-info">
-					<text class="cand-reason">{{ c.reason }}</text>
-					<text class="cand-pages">第 {{ c.pages.join('、') }} 页<text v-if="c.width"> · {{ c.width }}×{{ c.height }}</text></text>
-				</view>
-			</view>
-			<button class="btn-primary" style="margin-top: 24rpx" :disabled="busy || !checkedIds.length" @tap="remove">
+		<div v-if="candidates.length" class="card">
+			<div class="row-between">
+				<div class="card-title" style="margin-bottom: 0">候选水印（{{ candidates.length }} 个）</div>
+				<span class="hint">点击条目可勾选/取消</span>
+			</div>
+			<div v-for="c in candidates" :key="c.id" class="cand" :class="{ on: c.checked }" @click="c.checked = !c.checked">
+				<div class="cand-check">{{ c.checked ? '✓' : '' }}</div>
+				<img v-if="c.preview" class="cand-img" :src="c.preview" />
+				<div v-else class="cand-img cand-img-empty"><span>{{ c.type === 'annot' ? '注释' : '无预览' }}</span></div>
+				<div class="cand-info">
+					<span class="cand-reason">{{ c.reason }}</span>
+					<span class="cand-pages">第 {{ c.pages.join('、') }} 页<span v-if="c.width"> · {{ c.width }}×{{ c.height }}</span></span>
+				</div>
+			</div>
+			<button class="btn-primary" style="margin-top: calc(24 * var(--rpx))" :disabled="busy || !checkedIds.length" @click="remove">
 				删除所选并生成（{{ checkedIds.length }} 个）
 			</button>
-		</view>
+		</div>
 
-		<view v-if="result" class="card">
-			<view class="card-title">结果预览（首页）</view>
-			<image v-if="preview" class="preview-img" :src="preview" mode="widthFix" />
-			<view class="result-item">
-				<text class="file-name">{{ result.name }}（{{ result.sizeText }}）</text>
-				<button class="mini-btn" @tap="download">下载</button>
-			</view>
-		</view>
-	</view>
+		<div v-if="result" class="card">
+			<div class="card-title">结果预览（首页）</div>
+			<img v-if="preview" class="preview-img" :src="preview" />
+			<div class="result-item">
+				<span class="file-name">{{ result.name }}（{{ result.sizeText }}）</span>
+				<button class="mini-btn" @click="download">下载</button>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
 import { pickFiles, readFileBytes, downloadBytes, formatSize, baseName } from '../../utils/file'
+import { alertModal } from '../../utils/ui'
 import { getPdfThumbnails } from '../../utils/pdfjs'
 import { detectWatermarks, removeWatermarks } from '../../utils/watermark-remove'
 
@@ -92,7 +93,7 @@ export default {
 				this.preview = ''
 				await this.detect()
 			} catch (e) {
-				uni.showModal({ title: '无法读取', content: String((e && e.message) || e), showCancel: false })
+				alertModal('无法读取', String((e && e.message) || e))
 			}
 		},
 		async detect() {
@@ -106,7 +107,7 @@ export default {
 				this.candidates = candidates
 				this.detected = true
 			} catch (e) {
-				uni.showModal({ title: '识别失败', content: String((e && e.message) || e), showCancel: false })
+				alertModal('识别失败', String((e && e.message) || e))
 			} finally {
 				this.busy = false
 			}
@@ -120,7 +121,7 @@ export default {
 				this.result = { bytes, name, sizeText: formatSize(bytes.length) }
 				this.preview = (await getPdfThumbnails(bytes, 1, 600))[0] || ''
 			} catch (e) {
-				uni.showModal({ title: '删除失败', content: String((e && e.message) || e), showCancel: false })
+				alertModal('删除失败', String((e && e.message) || e))
 			} finally {
 				this.busy = false
 			}
@@ -136,8 +137,8 @@ export default {
 .cand {
 	display: flex;
 	align-items: center;
-	padding: 20rpx 0;
-	border-bottom: 1rpx solid #f0f1f3;
+	padding: calc(20 * var(--rpx)) 0;
+	border-bottom: calc(1 * var(--rpx)) solid #f0f1f3;
 }
 
 .cand:last-of-type {
@@ -145,17 +146,17 @@ export default {
 }
 
 .cand-check {
-	width: 48rpx;
-	height: 48rpx;
-	border-radius: 10rpx;
-	border: 2rpx solid #d1d5db;
+	width: calc(48 * var(--rpx));
+	height: calc(48 * var(--rpx));
+	border-radius: calc(10 * var(--rpx));
+	border: calc(2 * var(--rpx)) solid #d1d5db;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	color: #ffffff;
-	font-size: 30rpx;
+	font-size: calc(30 * var(--rpx));
 	flex-shrink: 0;
-	margin-right: 20rpx;
+	margin-right: calc(20 * var(--rpx));
 }
 
 .cand.on .cand-check {
@@ -164,36 +165,37 @@ export default {
 }
 
 .cand-img {
-	width: 88rpx;
-	height: 88rpx;
-	border-radius: 8rpx;
+	width: calc(88 * var(--rpx));
+	height: calc(88 * var(--rpx));
+	border-radius: calc(8 * var(--rpx));
 	background: #f3f4f6;
 	flex-shrink: 0;
+	object-fit: contain;
 }
 
 .cand-img-empty {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 20rpx;
+	font-size: calc(20 * var(--rpx));
 	color: #9ca3af;
 }
 
 .cand-info {
 	flex: 1;
-	margin-left: 20rpx;
+	margin-left: calc(20 * var(--rpx));
 	display: flex;
 	flex-direction: column;
 }
 
 .cand-reason {
-	font-size: 26rpx;
+	font-size: calc(26 * var(--rpx));
 	color: #374151;
 }
 
 .cand-pages {
-	font-size: 22rpx;
+	font-size: calc(22 * var(--rpx));
 	color: #9ca3af;
-	margin-top: 6rpx;
+	margin-top: calc(6 * var(--rpx));
 }
 </style>

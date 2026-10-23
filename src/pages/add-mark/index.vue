@@ -1,74 +1,75 @@
 <template>
-	<view class="tool-page">
-		<view class="card">
-			<view class="card-title">选择 PDF</view>
-			<button class="btn-ghost" @tap="choose">{{ file ? '重新选择' : '选择 PDF 文件' }}</button>
-			<view v-if="file" class="file-item">
-				<view class="file-name">
-					<text>{{ file.name }}</text>
-					<text class="file-size">{{ file.pageCount }} 页 · {{ file.sizeText }}</text>
-				</view>
-			</view>
-		</view>
+	<div class="tool-page">
+		<div class="card">
+			<div class="card-title">选择 PDF</div>
+			<button class="btn-ghost" @click="choose">{{ file ? '重新选择' : '选择 PDF 文件' }}</button>
+			<div v-if="file" class="file-item">
+				<div class="file-name">
+					<span>{{ file.name }}</span>
+					<span class="file-size">{{ file.pageCount }} 页 · {{ file.sizeText }}</span>
+				</div>
+			</div>
+		</div>
 
-		<view class="card">
-			<view class="card-title">水印内容</view>
-			<view class="seg">
-				<view class="seg-item" :class="{ active: mode === 'text' }" @tap="mode = 'text'">文字</view>
-				<view class="seg-item" :class="{ active: mode === 'image' }" @tap="mode = 'image'">图片</view>
-			</view>
+		<div class="card">
+			<div class="card-title">水印内容</div>
+			<div class="seg">
+				<div class="seg-item" :class="{ active: mode === 'text' }" @click="mode = 'text'">文字</div>
+				<div class="seg-item" :class="{ active: mode === 'image' }" @click="mode = 'image'">图片</div>
+			</div>
 			<template v-if="mode === 'text'">
-				<view class="label">水印文字</view>
+				<div class="label">水印文字</div>
 				<input class="input" v-model="text" placeholder="例如：机密文件" />
 			</template>
 			<template v-else>
-				<view class="label">水印图片</view>
-				<view class="row">
-					<button class="btn-ghost" style="flex:1" @tap="chooseImage">{{ imageFile ? imageFile : '选择图片' }}</button>
-					<button v-if="imageBytes" class="mini-btn danger" @tap="clearImage">清除</button>
-				</view>
-				<image v-if="imageURL" class="mark-img" :src="imageURL" mode="aspectFit" />
+				<div class="label">水印图片</div>
+				<div class="row">
+					<button class="btn-ghost" style="flex:1" @click="chooseImage">{{ imageFile ? imageFile : '选择图片' }}</button>
+					<button v-if="imageBytes" class="mini-btn danger" @click="clearImage">清除</button>
+				</div>
+				<img v-if="imageURL" class="mark-img" :src="imageURL" />
 			</template>
-			<view class="label">布局</view>
-			<view class="seg">
-				<view class="seg-item" :class="{ active: layout === 'tile' }" @tap="layout = 'tile'">平铺</view>
-				<view class="seg-item" :class="{ active: layout === 'center' }" @tap="layout = 'center'">居中</view>
-			</view>
-			<view class="label">颜色</view>
-			<view class="row color-row">
-				<view
+			<div class="label">布局</div>
+			<div class="seg">
+				<div class="seg-item" :class="{ active: layout === 'tile' }" @click="layout = 'tile'">平铺</div>
+				<div class="seg-item" :class="{ active: layout === 'center' }" @click="layout = 'center'">居中</div>
+			</div>
+			<div class="label">颜色</div>
+			<div class="row color-row">
+				<div
 					v-for="c in colorPresets"
 					:key="c"
 					class="color-dot"
 					:class="{ active: color === c }"
 					:style="{ backgroundColor: c }"
-					@tap="color = c"
-				></view>
+					@click="color = c"
+				></div>
 				<input class="input color-input" v-model="color" placeholder="#9ca3af" />
-			</view>
-			<view class="label">透明度：{{ opacity }}%</view>
-			<slider :value="opacity" :min="5" :max="100" :step="5" activeColor="#2f6bff" @change="(e) => (opacity = e.detail.value)" />
-			<view class="label">倾斜角度：{{ angle }}°</view>
-			<slider :value="angle" :min="-90" :max="90" :step="5" activeColor="#2f6bff" @change="(e) => (angle = e.detail.value)" />
-			<view class="label">大小：{{ size }} pt</view>
-			<slider :value="size" :min="16" :max="120" :step="4" activeColor="#2f6bff" @change="(e) => (size = e.detail.value)" />
-		</view>
+			</div>
+			<div class="label">透明度：{{ opacity }}%</div>
+			<input type="range" class="range" :value="opacity" :min="5" :max="100" :step="5" @input="(e) => (opacity = Number(e.target.value))" />
+			<div class="label">倾斜角度：{{ angle }}°</div>
+			<input type="range" class="range" :value="angle" :min="-90" :max="90" :step="5" @input="(e) => (angle = Number(e.target.value))" />
+			<div class="label">大小：{{ size }} pt</div>
+			<input type="range" class="range" :value="size" :min="16" :max="120" :step="4" @input="(e) => (size = Number(e.target.value))" />
+		</div>
 
-		<view class="card">
-			<button class="btn-primary" :disabled="!file || busy" @tap="generate">
+		<div class="card">
+			<button class="btn-primary" :disabled="!file || busy" @click="generate">
 				{{ busy ? '处理中…' : '生成预览' }}
 			</button>
-			<image v-if="preview" class="preview-img" :src="preview" mode="widthFix" />
-			<view v-if="result" class="result-item">
-				<text class="file-name">{{ result.name }}（{{ result.sizeText }}）</text>
-				<button class="mini-btn" @tap="download">下载</button>
-			</view>
-		</view>
-	</view>
+			<img v-if="preview" class="preview-img" :src="preview" />
+			<div v-if="result" class="result-item">
+				<span class="file-name">{{ result.name }}（{{ result.sizeText }}）</span>
+				<button class="mini-btn" @click="download">下载</button>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
 import { pickFiles, readFileBytes, downloadBytes, formatSize, baseName } from '../../utils/file'
+import { alertModal } from '../../utils/ui'
 import { getPdfThumbnails, getPdfPageCount } from '../../utils/pdfjs'
 import { addWatermark } from '../../utils/watermark-add'
 
@@ -104,7 +105,7 @@ export default {
 				this.result = null
 				this.preview = ''
 			} catch (e) {
-				uni.showModal({ title: '无法读取', content: String((e && e.message) || e), showCancel: false })
+				alertModal('无法读取', String((e && e.message) || e))
 			}
 		},
 		async chooseImage() {
@@ -141,7 +142,7 @@ export default {
 				this.result = { bytes, name, sizeText: formatSize(bytes.length) }
 				this.preview = (await getPdfThumbnails(bytes, 1, 600))[0] || ''
 			} catch (e) {
-				uni.showModal({ title: '生成失败', content: String((e && e.message) || e), showCancel: false })
+				alertModal('生成失败', String((e && e.message) || e))
 			} finally {
 				this.busy = false
 			}
@@ -159,11 +160,11 @@ export default {
 }
 
 .color-dot {
-	width: 56rpx;
-	height: 56rpx;
+	width: calc(56 * var(--rpx));
+	height: calc(56 * var(--rpx));
 	border-radius: 50%;
-	margin-right: 16rpx;
-	border: 4rpx solid transparent;
+	margin-right: calc(16 * var(--rpx));
+	border: calc(4 * var(--rpx)) solid transparent;
 }
 
 .color-dot.active {
@@ -172,14 +173,15 @@ export default {
 
 .color-input {
 	flex: 1;
-	min-width: 200rpx;
+	min-width: calc(200 * var(--rpx));
 }
 
 .mark-img {
-	width: 200rpx;
-	height: 200rpx;
+	width: calc(200 * var(--rpx));
+	height: calc(200 * var(--rpx));
 	background: #f3f4f6;
-	border-radius: 12rpx;
-	margin-top: 16rpx;
+	border-radius: calc(12 * var(--rpx));
+	margin-top: calc(16 * var(--rpx));
+	object-fit: contain;
 }
 </style>
