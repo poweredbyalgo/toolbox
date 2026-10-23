@@ -1,5 +1,5 @@
-# SW 必须每次回源校验，否则旧 SW 锁死更新（CF Pages 对 /sw.js 有强制 4h 缓存特判，故文件名已改为 app-sw.js）
-/app-sw.js
+# SW 必须每次回源校验，否则旧 SW 锁死更新
+/sw.js
   Cache-Control: no-cache
-/toolbox/app-sw.js
+/toolbox/sw.js
   Cache-Control: no-cache

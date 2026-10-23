@@ -20,10 +20,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       // 自定义 SW：导航请求走 NetworkFirst，永远优先网络，杜绝旧缓存壳页劫持
       strategies: 'injectManifest',
-      // injectManifest 模式下 SW 源文件按 srcDir + filename(sw.js) 解析
+      // injectManifest 模式下 SW 源文件按 srcDir + filename 解析
       srcDir: 'src',
-      // CF Pages 对 /sw.js 强制 4 小时缓存且 _headers 无法覆盖，改名绕开特判
-      filename: 'app-sw.js',
       includeAssets: ['static/icons/favicon.svg'],
       manifest: {
         name: '工具箱',
