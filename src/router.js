@@ -10,6 +10,7 @@ const routes = [
 	{ path: '/pages/remove-mark/index', component: () => import('./pages/remove-mark/index.vue'), meta: { title: 'PDF 去水印' } },
 	{ path: '/pages/pdf2img/index', component: () => import('./pages/pdf2img/index.vue'), meta: { title: 'PDF 转图片' } },
 	{ path: '/pages/img-bg/index', component: () => import('./pages/img-bg/index.vue'), meta: { title: '图片背景提取' } },
+	{ path: '/pages/img-resize/index', component: () => import('./pages/img-resize/index.vue'), meta: { title: '图片改尺寸' } },
 	{ path: '/:pathMatch(.*)*', redirect: '/' },
 ]
 

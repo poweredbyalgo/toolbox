@@ -2,7 +2,7 @@
 	<div class="home">
 		<div class="hero">
 			<span class="hero-title">工具箱</span>
-			<span class="hero-sub">图片转PDF · 合并 · 拆分 · 水印 · 转图片 · 背景提取，全部在浏览器本地处理，文件不上传</span>
+			<span class="hero-sub">图片转PDF · 合并 · 拆分 · 水印 · 转图片 · 背景提取 · 改尺寸，全部在浏览器本地处理，文件不上传</span>
 		</div>
 		<div class="grid">
 			<div
@@ -58,6 +58,7 @@ export default {
 				{ name: 'PDF 去水印', desc: '删除 PDF 中的水印图片对象', badge: '去', color: '#10b981', url: '/pages/remove-mark/index' },
 				{ name: 'PDF 转图片', desc: '逐页导出 JPG / PNG', badge: '转', color: '#ef4444', url: '/pages/pdf2img/index' },
 				{ name: '图片背景提取', desc: '背景一键转纯白 / 透明', badge: '底', color: '#14b8a6', url: '/pages/img-bg/index' },
+				{ name: '图片改尺寸', desc: '自定义宽高，等比缩放', badge: '尺', color: '#ec4899', url: '/pages/img-resize/index' },
 			],
 		}
 	},

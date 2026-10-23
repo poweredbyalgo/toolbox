@@ -40,6 +40,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -47,6 +48,19 @@ body {
   font-size: calc(28 * var(--rpx));
   color: #1f2937;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* 触控优化：开启双指缩放后仍避免双击缩放带来的点击延迟 */
+a,
+button,
+input,
+label,
+.tool-card,
+.seg-item,
+.header-back,
+.install-btn,
+.guide-btn {
+  touch-action: manipulation;
 }
 
 /* 原生元素基础重置，保持与原 uni 组件一致的观感 */
@@ -97,7 +111,8 @@ input {
 .header-back {
   font-size: calc(28 * var(--rpx));
   color: #2f6bff;
-  padding: calc(12 * var(--rpx)) calc(16 * var(--rpx));
+  padding: calc(24 * var(--rpx)) calc(28 * var(--rpx));
+  margin: calc(-12 * var(--rpx)) calc(-8 * var(--rpx));
 }
 
 .header-title {
@@ -115,6 +130,8 @@ input {
   padding: calc(24 * var(--rpx));
   box-sizing: border-box;
   min-height: calc(100vh - calc(88 * var(--rpx)));
+  /* 移动端动态视口，避免地址栏收起时 100vh 造成底部被裁切 */
+  min-height: calc(100dvh - calc(88 * var(--rpx)));
 }
 
 .card {
@@ -218,9 +235,11 @@ input {
   color: #6b7280;
   background: #f3f4f6;
   border-radius: calc(8 * var(--rpx));
-  padding: calc(6 * var(--rpx)) calc(16 * var(--rpx));
+  padding: calc(12 * var(--rpx)) calc(20 * var(--rpx));
   margin: calc(4 * var(--rpx)) 0;
   line-height: 1.4;
+  /* 保证手机上可点区域足够大 */
+  min-height: calc(64 * var(--rpx));
 }
 
 .mini-btn[disabled] {
@@ -253,7 +272,8 @@ input {
   border: calc(1 * var(--rpx)) solid #e5e7eb;
   border-radius: calc(12 * var(--rpx));
   padding: calc(16 * var(--rpx)) calc(20 * var(--rpx));
-  font-size: calc(28 * var(--rpx));
+  /* iOS 聚焦时字号小于 16px 会自动放大页面，这里兜底 */
+  font-size: max(calc(28 * var(--rpx)), 16px);
   width: 100%;
   box-sizing: border-box;
   background: #fafbfc;
@@ -309,7 +329,7 @@ input {
   text-align: center;
   font-size: calc(26 * var(--rpx));
   color: #6b7280;
-  padding: calc(14 * var(--rpx)) 0;
+  padding: calc(20 * var(--rpx)) 0;
   border-radius: calc(10 * var(--rpx));
 }
 
