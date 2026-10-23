@@ -18,6 +18,10 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'autoUpdate',
+      // 自定义 SW：导航请求走 NetworkFirst，永远优先网络，杜绝旧缓存壳页劫持
+      strategies: 'injectManifest',
+      // injectManifest 模式下 SW 源文件按 srcDir + filename(sw.js) 解析
+      srcDir: 'src',
       includeAssets: ['static/icons/favicon.svg'],
       manifest: {
         name: '工具箱',
@@ -51,10 +55,7 @@ export default defineConfig({
           }
         ]
       },
-      workbox: {
-        // 插件默认注入 navigateFallback: 'index.html'，会让 SW 用缓存的旧 index.html
-        // 响应所有导航请求，导致更新后仍加载旧壳页面；显式置 null 去掉该兜底路由
-        navigateFallback: null,
+      injectManifest: {
         // pdf.worker 以 .mjs 输出，默认 glob 不包含，需显式加入
         globPatterns: ['**/*.{js,mjs,css,html,ico,png,svg,webmanifest,woff2}'],
         maximumFileSizeToCacheInBytes: 12 * 1024 * 1024
