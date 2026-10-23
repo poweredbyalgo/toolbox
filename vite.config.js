@@ -5,8 +5,8 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // 发布后应用部署在站点根下的 pdf-toolbox 目录
-  base: '/pdf-toolbox/',
+  // 发布后应用部署在站点根下的 toolbox 目录
+  base: '/toolbox/',
   // 保留默认 public 目录，构建时将 public/app.json 复制到产物根目录（发布接口要求）
   publicDir: 'public',
   resolve: {
@@ -20,18 +20,18 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['static/icons/favicon.svg'],
       manifest: {
-        name: 'PDF 工具箱',
-        short_name: 'PDF工具箱',
-        description: '常用 PDF 处理工具：图片转PDF、PDF合并、PDF拆分、去水印、加水印、PDF转图片，全部本地处理。',
+        name: '工具箱',
+        short_name: '工具箱',
+        description: '常用图片与 PDF 处理工具：背景提取、图片转PDF、PDF合并、PDF拆分、去水印、加水印、PDF转图片，全部本地处理。',
         theme_color: '#2f6bff',
         background_color: '#f5f7fa',
         display: 'standalone',
         // 桌面端安装后让内容延伸到标题栏区域，消除顶部空白条；移动端自动回退 standalone
         display_override: ['window-controls-overlay', 'standalone'],
         lang: 'zh-CN',
-        id: '/pdf-toolbox/',
-        start_url: '/pdf-toolbox/',
-        scope: '/pdf-toolbox/',
+        id: '/toolbox/',
+        start_url: '/toolbox/',
+        scope: '/toolbox/',
         icons: [
           {
             src: 'static/icons/pwa-192x192.png',

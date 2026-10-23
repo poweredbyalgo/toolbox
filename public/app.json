@@ -1,5 +1,5 @@
 {
-  "name": "pdf-toolbox",
-  "description": "PDF 工具箱：图片转PDF、PDF合并、PDF拆分、去水印、加水印、PDF转图片，全部本地处理的静态站点。",
-  "tags": ["pdf", "tools", "h5", "static-site", "pwa"]
+  "name": "toolbox",
+  "description": "工具箱：图片背景提取、图片转PDF、PDF合并、PDF拆分、去水印、加水印、PDF转图片，全部本地处理的静态站点。",
+  "tags": ["tools", "image", "pdf", "h5", "static-site", "pwa"]
 }

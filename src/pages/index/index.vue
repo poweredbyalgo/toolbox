@@ -1,7 +1,7 @@
 <template>
 	<div class="home">
 		<div class="hero">
-			<span class="hero-title">PDF 工具箱</span>
+			<span class="hero-title">工具箱</span>
 			<span class="hero-sub">图片转PDF · 合并 · 拆分 · 水印 · 转图片 · 背景提取，全部在浏览器本地处理，文件不上传</span>
 		</div>
 		<div class="grid">
@@ -86,7 +86,7 @@ export default {
 			}
 			if (this.guidePlatform === 'fallback') {
 				return [
-					'上滑打开应用列表，搜索「PDF工具箱」——有就说明已装好，长按图标拖到桌面即可',
+					'上滑打开应用列表，搜索「工具箱」——有就说明已装好，长按图标拖到桌面即可',
 					'Edge 菜单 ··· → 「应用」，看列表里有没有；有就直接从那里打开',
 					'小米/华为/OPPO 等手机：系统设置 → 应用 → Edge → 权限 → 允许「创建桌面快捷方式」，然后重新安装',
 					'仍不行就换 Chrome 打开本页面再点安装（安卓版 Edge 的 PWA 安装存在已知 bug）',
