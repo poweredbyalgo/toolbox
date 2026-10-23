@@ -42,6 +42,12 @@
 			"style": {
 				"navigationBarTitleText": "PDF 转图片"
 			}
+		},
+		{
+			"path": "pages/img-bg/index",
+			"style": {
+				"navigationBarTitleText": "图片背景提取"
+			}
 		}
 	],
 	"globalStyle": {
