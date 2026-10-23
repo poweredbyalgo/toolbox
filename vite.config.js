@@ -7,7 +7,7 @@ import { fileURLToPath, URL } from 'node:url'
 export default defineConfig({
   // 发布后应用部署在站点根下的 toolbox 目录
   base: '/toolbox/',
-  // 保留默认 public 目录，构建时将 public/app.json 复制到产物根目录（发布接口要求）
+  // 保留默认 public 目录（PWA 图标等静态资源）
   publicDir: 'public',
   resolve: {
     alias: {
@@ -52,6 +52,9 @@ export default defineConfig({
         ]
       },
       workbox: {
+        // 插件默认注入 navigateFallback: 'index.html'，会让 SW 用缓存的旧 index.html
+        // 响应所有导航请求，导致更新后仍加载旧壳页面；显式置 null 去掉该兜底路由
+        navigateFallback: null,
         // pdf.worker 以 .mjs 输出，默认 glob 不包含，需显式加入
         globPatterns: ['**/*.{js,mjs,css,html,ico,png,svg,webmanifest,woff2}'],
         maximumFileSizeToCacheInBytes: 12 * 1024 * 1024
