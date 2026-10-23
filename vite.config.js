@@ -22,6 +22,8 @@ export default defineConfig({
       strategies: 'injectManifest',
       // injectManifest 模式下 SW 源文件按 srcDir + filename(sw.js) 解析
       srcDir: 'src',
+      // CF Pages 对 /sw.js 强制 4 小时缓存且 _headers 无法覆盖，改名绕开特判
+      filename: 'app-sw.js',
       includeAssets: ['static/icons/favicon.svg'],
       manifest: {
         name: '工具箱',

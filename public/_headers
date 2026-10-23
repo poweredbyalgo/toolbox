@@ -1,5 +1,5 @@
-# sw.js 必须每次回源校验，否则 CF Pages 默认 4 小时缓存会锁死旧 Service Worker
-/sw.js
+# SW 必须每次回源校验，否则旧 SW 锁死更新（CF Pages 对 /sw.js 有强制 4h 缓存特判，故文件名已改为 app-sw.js）
+/app-sw.js
   Cache-Control: no-cache
-/toolbox/sw.js
+/toolbox/app-sw.js
   Cache-Control: no-cache
