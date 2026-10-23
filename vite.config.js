@@ -5,8 +5,8 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // 发布后应用部署在站点根下的 toolbox 目录
-  base: '/toolbox/',
+  // Cloudflare Pages 部署在站点根路径，资源必须从 / 引用
+  base: '/',
   // 保留默认 public 目录，构建时将 public/app.json 复制到产物根目录（发布接口要求）
   publicDir: 'public',
   resolve: {
@@ -29,9 +29,9 @@ export default defineConfig({
         // 桌面端安装后让内容延伸到标题栏区域，消除顶部空白条；移动端自动回退 standalone
         display_override: ['window-controls-overlay', 'standalone'],
         lang: 'zh-CN',
-        id: '/toolbox/',
-        start_url: '/toolbox/',
-        scope: '/toolbox/',
+        id: '/',
+        start_url: '/',
+        scope: '/',
         icons: [
           {
             src: 'static/icons/pwa-192x192.png',
