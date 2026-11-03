@@ -26,7 +26,7 @@ export default defineConfig({
       manifest: {
         name: '工具箱',
         short_name: '工具箱',
-        description: '常用图片与 PDF 处理工具：背景提取、图片转PDF、PDF合并、PDF拆分、去水印、加水印、PDF转图片，全部本地处理。',
+        description: '常用图片、PDF 与动图处理工具：背景提取、图片转PDF、PDF合并、PDF拆分、去水印、加水印、PDF转图片、GIF与MP4互转，全部本地处理。',
         theme_color: '#2f6bff',
         background_color: '#f5f7fa',
         display: 'standalone',

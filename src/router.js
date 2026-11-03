@@ -11,6 +11,7 @@ const routes = [
 	{ path: '/pages/pdf2img/index', component: () => import('./pages/pdf2img/index.vue'), meta: { title: 'PDF 转图片' } },
 	{ path: '/pages/img-bg/index', component: () => import('./pages/img-bg/index.vue'), meta: { title: '图片背景提取' } },
 	{ path: '/pages/img-resize/index', component: () => import('./pages/img-resize/index.vue'), meta: { title: '图片改尺寸' } },
+	{ path: '/pages/gif-mp4/index', component: () => import('./pages/gif-mp4/index.vue'), meta: { title: 'GIF ⇄ MP4 转换' } },
 	{ path: '/:pathMatch(.*)*', redirect: '/' },
 ]
 
